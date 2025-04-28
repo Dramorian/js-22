@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JavaScript Tasks Viewer</title>
+
+  <!-- Prism.js styles and plugins -->
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/line-numbers/prism-line-numbers.css" rel="stylesheet" />
+
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
   <style>
       * {
           box-sizing: border-box;
@@ -58,18 +67,19 @@
       }
 
       .task-display {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
+          display: flex;
+          flex-direction: column;
           gap: 20px;
           margin-top: 20px;
       }
+
 
       .code-container, .result-container {
           background-color: #f8f9fa;
           border-radius: 6px;
           padding: 20px;
           border: 1px solid #e0e0e0;
-          height: 500px;
+          height: auto;
           overflow-y: auto;
       }
 
@@ -139,19 +149,22 @@
   <h1>JavaScript Tasks Viewer</h1>
 
   <div class="tasks-navigation">
+    <!-- кнопки задач -->
     <button class="task-btn" data-task="task-01.js">Task 1</button>
     <button class="task-btn" data-task="task-02.js">Task 2</button>
     <button class="task-btn" data-task="task-03.js">Task 3</button>
     <button class="task-btn" data-task="task-04.js">Task 4</button>
     <button class="task-btn" data-task="task-05.js">Task 5</button>
     <button class="task-btn" data-task="task-06.js">Task 6</button>
+    <button class="task-btn" data-task="task-07.js">Task 7</button>
   </div>
 
   <div class="task-display">
     <div class="code-container">
       <h3>Code</h3>
-      <pre id="code-viewer">Select a task to view its code</pre>
+      <pre id="code-viewer" class="line-numbers"><code class="language-javascript">Select a task to view its code</code></pre>
     </div>
+
 
     <div class="result-container">
       <h3>Result</h3>
@@ -162,19 +175,15 @@
 </div>
 
 <script>
-  // Global variable to store the current task code
   let currentTaskCode = '';
   let currentTaskFile = '';
 
-  // Function to fetch the content of a JS file
   async function fetchTaskCode(filename) {
     try {
       const response = await fetch(`js/${filename}`);
-
       if (!response.ok) {
         throw new Error(`Failed to load file: ${filename}`);
       }
-
       return await response.text();
     } catch (error) {
       console.error('Error fetching task code:', error);
@@ -182,92 +191,76 @@
     }
   }
 
-  // Function to handle task button clicks
   async function handleTaskClick(event) {
     const taskFilename = event.target.getAttribute('data-task');
     currentTaskFile = taskFilename;
 
-    // Update active button
     document.querySelectorAll('.task-btn').forEach(btn => {
       btn.classList.remove('active');
     });
     event.target.classList.add('active');
 
-    // Fetch and display code
     currentTaskCode = await fetchTaskCode(taskFilename);
-    document.getElementById('code-viewer').textContent = currentTaskCode;
 
-    // Reset result area
+    const codeBlock = document.querySelector('#code-viewer code');
+    codeBlock.textContent = currentTaskCode;
+
+    Prism.highlightElement(codeBlock);
+
+    // (Необязательно) Обновляем line numbers, если нужен resize после подстановки большого кода
+    if (typeof Prism.plugins.lineNumbers !== 'undefined') {
+      Prism.plugins.lineNumbers.resize(codeBlock);
+    }
+
     document.getElementById('result-viewer').innerHTML = 'Click "Execute Code" to run this task';
-
-    // Show execute button
     document.getElementById('execute-btn').style.display = 'block';
   }
 
-  // Function to execute the current task code
+
   function executeTaskCode() {
     const resultViewer = document.getElementById('result-viewer');
     resultViewer.innerHTML = '';
 
-    // Create a container for console output
     const consoleOutput = document.createElement('div');
     consoleOutput.className = 'console-output';
     consoleOutput.innerHTML = '<div class="console-title">Console Output:</div>';
 
-    // Create a container for the actual task output
     const taskOutputContainer = document.createElement('div');
     taskOutputContainer.className = 'task-output';
 
-    // Add both to the result viewer
     resultViewer.appendChild(taskOutputContainer);
     resultViewer.appendChild(consoleOutput);
 
     try {
-      // Create a new function to sandbox the code execution
-      // Override console.log to capture output
       const originalConsoleLog = console.log;
       const consoleMessages = [];
 
       console.log = function(...args) {
-        const message = args.map(arg => {
-          if (typeof arg === 'object') {
-            return JSON.stringify(arg);
-          }
-          return String(arg);
-        }).join(' ');
-
+        const message = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' ');
         consoleMessages.push(message);
         originalConsoleLog.apply(console, args);
       };
 
-      // Create a sandbox div to capture DOM manipulations
       const sandbox = document.createElement('div');
       sandbox.id = `task-output-${currentTaskFile.replace('.js', '')}`;
       taskOutputContainer.appendChild(sandbox);
 
-      // Execute the code
       const executeFunction = new Function('sandbox', `
           with(document) {
             const getElementById = function(id) {
-              if (id === 'task-output-${currentTaskFile.replace('.js', '')}' ||
-                  id === '${currentTaskFile.replace('.js', '')}-result' ||
-                  id === '${currentTaskFile.replace('.js', '')}' ||
-                  id === '${currentTaskFile.split('-')[0]}' ||
-                  id === '${currentTaskFile.replace('.js', '').replace('-', '_')}') {
+              if (id === '${sandbox.id}') {
                 return sandbox;
               }
               return document.getElementById(id);
             };
             ${currentTaskCode}
           }
-        `);
+      `);
 
       executeFunction(sandbox);
 
-      // Restore original console.log
       console.log = originalConsoleLog;
 
-      // Display console output
       if (consoleMessages.length > 0) {
         const messagesDiv = document.createElement('div');
         messagesDiv.innerHTML = consoleMessages.map(msg => `<div>${msg}</div>`).join('');
@@ -285,15 +278,13 @@
     }
   }
 
-  // Add event listeners
   document.querySelectorAll('.task-btn').forEach(button => {
     button.addEventListener('click', handleTaskClick);
   });
 
   document.getElementById('execute-btn').addEventListener('click', executeTaskCode);
 
-  // Load the first task on page load
-  document.querySelector('.task-btn').click();
+  document.querySelector('.task-btn').click(); // автозагрузка первой задачи
 </script>
 </body>
 </html>

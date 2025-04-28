@@ -1,9 +1,8 @@
-const name = 'Генератор захисного поля';
+const logItems = function (array) {
+  for (let i = 0; i < array.length; i++) {
+    console.log(`${i + 1} - ${array[i]}`);
+  }
+};
 
-let price = 1000;
-
-console.log(`Обрано ${name}, ціна за штуку — ${price} кредитів`);
-
-price = 2000;
-
-console.log(`Обрано ${name}, ціна за штуку — ${price} кредитів`);
+logItems(['Mango', 'Poly', 'Ajax', 'Lux', 'Jay', 'Kong']);
+logItems([5, 10, 15, 20, 25, 30, 35, 40, 45, 50]);

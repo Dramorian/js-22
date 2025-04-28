@@ -1,22 +1,33 @@
 let input;
+const numbers = [];
 let total = 0;
 
 while (true) {
-  input = prompt('Введіть число');
+  input = prompt('Введіть число:');
 
+  // Если пользователь отменил ввод — выход из цикла
   if (input === null) {
-    // Користувач натиснув "Cancel"
     break;
   }
 
-  // Перевіряємо, чи це число
-  let number = Number(input);
+  // Приведение введённого значения в число
+  const number = Number(input);
 
+  // Проверка переменной на то, что она является числом
   if (isNaN(number)) {
-    alert('Було написано не число, спробуйте ще раз');
-  } else {
-    total += number;
+    alert('Було введено не число, спробуйте ще раз');
+    continue; // Переход на следующую итерацию цикла
   }
+
+  // Добавление числа в массив
+  numbers.push(number);
 }
 
-alert('Загальна сума чисел дорівнює ' + total);
+// Если массив не пустой — подсчёт суммы чисел
+if (numbers.length > 0) {
+  for (const num of numbers) {
+    total += num;
+  }
+
+  console.log(`Загальна сума чисел дорівнює ${total}`);
+}

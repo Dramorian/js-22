@@ -1,39 +1,12 @@
-// Запитуємо країну у користувача
-let country = prompt('Введіть країну для доставки');
+const checkForSpam = function (message) {
+  // Приведение строки к нижнему регистру
+  const lowerCaseMessage = message.toLowerCase();
 
-// Переводимо країну в нижній регістр для однакового порівняння
-let normalizedCountry = country.toLowerCase();
+  // Проверка строки на содержание слова 'spam' или 'sale'
+  return lowerCaseMessage.includes('spam') || lowerCaseMessage.includes('sale');
+};
 
-// Створюємо змінні для правильної назви країни та ціни
-let price;
-let countryName;
-
-switch (normalizedCountry) {
-  case 'китай':
-    price = 100;
-    countryName = 'Китай';
-    break;
-  case 'чилі':
-    price = 250;
-    countryName = 'Чилі';
-    break;
-  case 'австралія':
-    price = 170;
-    countryName = 'Австралія';
-    break;
-  case 'індія':
-    price = 80;
-    countryName = 'Індія';
-    break;
-  case 'ямайка':
-    price = 120;
-    countryName = 'Ямайка';
-    break;
-  default:
-    alert('У вашій країні доставка недоступна');
-    break;
-}
-
-if (price !== undefined) {
-  alert('Доставка в ' + countryName + ' буде коштувати ' + price + ' кредитів');
-}
+console.log(checkForSpam('Latest technology news')); // false
+console.log(checkForSpam('JavaScript weekly newsletter')); // false
+console.log(checkForSpam('Get best sale offers now!')); // true
+console.log(checkForSpam('[SPAM] How to earn fast money?')); // true

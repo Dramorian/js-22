@@ -1,17 +1,26 @@
-const credits = 23580;
+const formatString = function (string) {
+  // Проверяем длину строки
+  if (string.length <= 40) {
+    // Если длина строки 40 символов или меньше — возвращаем строку как есть
+    return string;
+  }
 
-const pricePerDroid = 3000;
+  // Если длина больше 40 — обрезаем строку и добавляем троеточие
+  return string.slice(0, 40) + '...';
+};
 
-let quantity = prompt('Введіть кількість дроїдів');
+console.log(formatString('Curabitur ligula sapien, tincidunt non.'));
+// Вернётся оригинальная строка: Curabitur ligula sapien, tincidunt non.
 
-let totalPrice = quantity * pricePerDroid;
+console.log(formatString('Vestibulum facilisis, purus nec pulvinar iaculis.'));
+// Вернётся форматированная строка: Vestibulum facilisis, purus nec pulvinar...
 
-if (quantity === null) {
-  console.log('Скасовано користувачем!');
-} else if (totalPrice > credits) {
-  console.log('Недостатньо коштів на рахунку!');
-} else {
-  console.log(
-    `Ви купили ${quantity} дроїдів, на рахунку залишилося ${credits - totalPrice} кредитів.`,
-  );
-}
+console.log(formatString('Curabitur ligula sapien.'));
+// Вернётся оригинальная строка: Curabitur ligula sapien.
+
+console.log(
+  formatString(
+    'Nunc sed turpis. Curabitur a felis in nunc fringilla tristique.',
+  ),
+);
+// Вернётся форматированная строка: Nunc sed turpis. Curabitur a felis in nu...
