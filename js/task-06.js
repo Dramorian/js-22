@@ -1,33 +1,23 @@
-let input;
-const numbers = [];
-let total = 0;
-
-while (true) {
-  input = prompt('Введіть число:');
-
-  // Если пользователь отменил ввод — выход из цикла
-  if (input === null) {
-    break;
+const products = [
+  { name: 'Радар', price: 1300, quantity: 4 },
+  { name: 'Сканер', price: 2700, quantity: 3 },
+  { name: 'Дроїд', price: 400, quantity: 7 },
+  { name: 'Захоплення', price: 1200, quantity: 2 },
+];
+const calculateTotalPrice = function (allProducts, productName) {
+  // Деструктуризация
+  for (const { name, price, quantity } of allProducts) {
+    if (name === productName) {
+      return price * quantity; // При обнаружении сразу возвращается результат
+    }
   }
+  return 0; // Если продукт не найден
+};
 
-  // Приведение введённого значения в число
-  const number = Number(input);
+console.log(calculateTotalPrice(products, 'Радар')); // 5200
 
-  // Проверка переменной на то, что она является числом
-  if (isNaN(number)) {
-    alert('Було введено не число, спробуйте ще раз');
-    continue; // Переход на следующую итерацию цикла
-  }
+console.log(calculateTotalPrice(products, 'Сканер')); // 8100
 
-  // Добавление числа в массив
-  numbers.push(number);
-}
+console.log(calculateTotalPrice(products, 'Дроїд')); // 2800
 
-// Если массив не пустой — подсчёт суммы чисел
-if (numbers.length > 0) {
-  for (const num of numbers) {
-    total += num;
-  }
-
-  console.log(`Загальна сума чисел дорівнює ${total}`);
-}
+console.log(calculateTotalPrice(products, 'Захоплення')); // 2400

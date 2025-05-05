@@ -1,22 +1,42 @@
-const findLongestWord = function (string) {
-  // Разбиваем строку на массив слов по пробелам
-  const words = string.split(' ');
+const findBestEmployee = function (employees) {
+  let bestEmployee = '';
+  let maxTasks = 0;
 
-  // Инициализация переменной для сохранения самого длинного слова — сначала первое
-  let longestWord = words[0];
+  // Object.entries() возвращает массив пар [ключ, значение] объекта
+  const employeeNames = Object.entries(employees);
 
-  // Проход по каждому слову, начиная с другого
-  for (let i = 1; i < words.length; i++) {
-    // Если текущее слово длиннее за сохранённое в longestWord — обновляем его
-    if (words[i].length > longestWord.length) {
-      longestWord = words[i];
+  // Деструктуризация: получение имени (employee) и количества задач (tasks)
+  for (const [employee, tasks] of employeeNames) {
+    if (tasks > maxTasks) {
+      maxTasks = tasks; // Обновление максимума, если найдено больше задач
+      bestEmployee = employee; // Запоминание нового лучшего сотрудника
     }
   }
-
-  // Возвращаем самое длинное слово
-  return longestWord;
+  return bestEmployee;
 };
 
-console.log(findLongestWord('The quick brown fox jumped over the lazy dog')); // 'jumped'
-console.log(findLongestWord('Google do a roll')); // 'Google'
-console.log(findLongestWord('May the force be with you')); // 'force'
+console.log(
+  findBestEmployee({
+    ann: 29,
+    david: 35,
+    helen: 1,
+    lorence: 99,
+  }),
+); // lorence
+
+console.log(
+  findBestEmployee({
+    poly: 12,
+    mango: 17,
+    ajax: 4,
+  }),
+); // mango
+
+console.log(
+  findBestEmployee({
+    lux: 147,
+    david: 21,
+    kiwi: 19,
+    chelsy: 38,
+  }),
+); // lux

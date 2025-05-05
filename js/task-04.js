@@ -1,26 +1,29 @@
-const formatString = function (string) {
-  // Проверяем длину строки
-  if (string.length <= 40) {
-    // Если длина строки 40 символов или меньше — возвращаем строку как есть
-    return string;
+const countTotalSalary = function (employees) {
+  let total = 0;
+  // Отдельная переменная для объекта зарплат
+  const salaries = Object.values(employees);
+
+  for (const salary of salaries) {
+    total += salary;
   }
 
-  // Если длина больше 40 — обрезаем строку и добавляем троеточие
-  return string.slice(0, 40) + '...';
+  return total;
 };
 
-console.log(formatString('Curabitur ligula sapien, tincidunt non.'));
-// Вернётся оригинальная строка: Curabitur ligula sapien, tincidunt non.
-
-console.log(formatString('Vestibulum facilisis, purus nec pulvinar iaculis.'));
-// Вернётся форматированная строка: Vestibulum facilisis, purus nec pulvinar...
-
-console.log(formatString('Curabitur ligula sapien.'));
-// Вернётся оригинальная строка: Curabitur ligula sapien.
+console.log(countTotalSalary({})); // 0
 
 console.log(
-  formatString(
-    'Nunc sed turpis. Curabitur a felis in nunc fringilla tristique.',
-  ),
-);
-// Вернётся форматированная строка: Nunc sed turpis. Curabitur a felis in nu...
+  countTotalSalary({
+    mango: 100,
+    poly: 150,
+    alfred: 80,
+  }),
+); // 330
+
+console.log(
+  countTotalSalary({
+    kiwi: 200,
+    lux: 50,
+    chelsy: 150,
+  }),
+); // 400

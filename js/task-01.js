@@ -1,8 +1,18 @@
-const logItems = function (array) {
-  for (let i = 0; i < array.length; i++) {
-    console.log(`${i + 1} - ${array[i]}`);
-  }
+const user = {
+  name: 'Mango',
+  age: 20,
+  hobby: 'html',
+  premium: true,
 };
 
-logItems(['Mango', 'Poly', 'Ajax', 'Lux', 'Jay', 'Kong']);
-logItems([5, 10, 15, 20, 25, 30, 35, 40, 45, 50]);
+// Добавление поля mood
+user.mood = 'happy';
+// Замена значения hobby
+user.hobby = 'skydiving';
+// Замена значения premium
+user.premium = false;
+
+// Вывод содержимого объекта в формате ключ:значение
+for (const key of Object.keys(user)) {
+  console.log(`${key}: ${user[key]}`);
+}
